@@ -1,0 +1,47 @@
+{
+    "name": "@yuandana/http-service",
+    "version": "1.0.0",
+    "description": "Some application packages based on axios can be used out of the box for restful specifications, and some commonly used interceptors are built-in",
+    "main": "dist/umd/index.js",
+    "module": "dist/es/index.js",
+    "files": [
+        "dist",
+        "src"
+    ],
+    "scripts": {
+        "test": "test",
+        "build": "cross-env NODE_ENV=production rollup -c"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/yuandana/http-service.git"
+    },
+    "keywords": [
+        "http-service",
+        "axios",
+        "restful"
+    ],
+    "author": "jingtian@yuandana.com",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/yuandana/http-service/issues"
+    },
+    "homepage": "https://github.com/yuandana/http-service#readme",
+    "dependencies": {
+        "axios": "^0.21.1",
+        "lodash-es": "^4.17.21"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.14.3",
+        "@babel/plugin-transform-runtime": "^7.14.3",
+        "@babel/preset-env": "^7.14.2",
+        "@rollup/plugin-babel": "^5.3.0",
+        "@rollup/plugin-commonjs": "^19.0.0",
+        "@rollup/plugin-node-resolve": "^13.0.0",
+        "@rollup/plugin-replace": "^2.4.2",
+        "cross-env": "^7.0.3",
+        "rollup": "^2.50.1",
+        "rollup-plugin-filesize": "^9.1.1",
+        "rollup-plugin-terser": "^7.0.2"
+    }
+}
