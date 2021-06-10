@@ -8,9 +8,16 @@
         "dist",
         "src"
     ],
+    "publishConfig": {
+        "access": "public"
+    },
     "scripts": {
         "test": "test",
-        "build": "cross-env NODE_ENV=production rollup -c"
+        "start": "cross-env NODE_ENV=development rollup -c --watch",
+        "build": "cross-env NODE_ENV=production rollup -c",
+        "publish:patch": "npm version patch && npm publish",
+        "publish:minor": "npm version minor && npm publish",
+        "publish:major": "npm version major && npm publish"
     },
     "repository": {
         "type": "git",

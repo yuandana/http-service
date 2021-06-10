@@ -15,8 +15,9 @@
 
 const requestInterceptor = [
     config => {
-        const { url, params, body } = config;
-        let nextUrl;
+        const { url, params, data } = config;
+        const nextParams = {...params};
+        let nextUrl = url;
         // 处理 url 中含 restful 参数的规则替换
         if (!url) {
             return config;
@@ -26,30 +27,30 @@ const requestInterceptor = [
             return config;
         }
 
-        if (params) {
-            Object.entries(params).forEach(([key, value]) => {
+        if (nextParams) {
+            Object.entries(nextParams).forEach(([key, value]) => {
                 const reg = new RegExp(`/:${key}`, 'g');
                 if (url.search(reg) !== -1) {
                     nextUrl = nextUrl.replace(reg, `/${value}`);
-                    delete params[key];
+                    delete nextParams[key];
                 }
             });
-            config.params = params;
+            config.params = nextParams;
         }
 
-        if (body) {
-            Object.entries(body).forEach(([key, value]) => {
+        if (data) {
+            Object.entries(data).forEach(([key, value]) => {
                 const reg = new RegExp(`/:${key}`, 'g');
                 if (url.search(reg) !== -1) {
                     nextUrl = nextUrl.replace(reg, `/${value}`);
                 }
             });
-            config.body = body;
+            config.data = data;
         }
 
         // 去除最后一个 :xxx
         // 满足 api/some/:id 的形势
-        // config.url = nextUrl.replace(/(\/:){1}(\w)+$/, '');
+        config.url = nextUrl.replace(/(\/:){1}(\w)+$/, '');
 
         return config;
     },

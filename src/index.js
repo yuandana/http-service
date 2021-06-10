@@ -18,7 +18,7 @@ const REQUEST_TYPE_MAPPER = {
     remove: 'delete'
 };
 
-const BODY_REQUEST_TYPE_LIST = ['get', 'remove', 'delete', 'head', 'options'];
+const PARAMS_REQUEST_TYPE_LIST = ['get', 'remove', 'delete', 'head', 'options'];
 
 const generateConfig = config => ({ ...BASE_CONFIG, ...config });
 
@@ -93,39 +93,41 @@ export const factory = url => {
             /**
              *
              * @param {Object} params
-             * @param {Function} cancelFn
-             * @param {Object} requestConfig
+             * @param {Function} receivingCancelFn
+             * @param {Object} config
              *
              * @returns service object
              */
-            const requestFn = (params, cancelFn, requestConfig) => {
+            const requestFn = (params, receivingCancelFn, config) => {
                 //
-                const payloadObject = BODY_REQUEST_TYPE_LIST.includes(
+                const payloadObject = PARAMS_REQUEST_TYPE_LIST.includes(
                     requestType
                 )
                     ? {
                           params
                       }
                     : {
-                          body: params
+                          data: params
                       };
 
                 //
-                const nextRequestConfig = {
+                const nextConfig = {
                     url,
                     method: axiosMethod,
                     ...payloadObject,
-                    ...requestConfig,
+                    ...config,
                     uuid: uniqueId(),
                     cancelToken: new axios.CancelToken(cancelFunction => {
                         // An executor function receives a cancel function as a parameter
-                        cancelFn(cancelFunction);
+                        if(typeof receivingCancelFn === 'function'){
+                            receivingCancelFn(cancelFunction);
+                        }
                     })
                 };
 
-                const nextConfig = generateConfig(url, nextRequestConfig);
+                const resultConfig = generateConfig(nextConfig);
 
-                return axios.request(nextConfig);
+                return axios.request(resultConfig);
             };
 
             return [requestType, requestFn];
@@ -134,3 +136,5 @@ export const factory = url => {
 
     return Object.fromEntries(factoryEntries);
 };
+
+export * as helpers from './helpers';

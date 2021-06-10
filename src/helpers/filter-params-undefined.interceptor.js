@@ -20,13 +20,14 @@ const filterUndefined = params => {
     const paramsEntries = Object.entries(params)
         .map(([key, value]) => {
             if (value === undefined) {
-                return [];
+                return null;
             }
             return [key, value];
         })
-        .filter(i => i.length !== 0);
+        .filter(Boolean);
 
-    return Object.formEntries(paramsEntries);
+    // return {...paramsEntries}
+    return Object.fromEntries(paramsEntries)
 };
 
 /**

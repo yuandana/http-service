@@ -7,3 +7,5 @@ export * from './file-stream.interceptor';
 export * from './filter-params-undefined.interceptor';
 
 export * from './restful.interceptor';
+
+export * from './server-error-handler.interceptor';

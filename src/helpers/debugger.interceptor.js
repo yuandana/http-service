@@ -1,4 +1,4 @@
-import httpDebuggerInterceptors from './http-debugger';
+import httpDebuggerInterceptors from './utils/http-debugger';
 
 /**
  *
