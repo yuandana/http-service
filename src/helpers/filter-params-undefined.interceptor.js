@@ -12,10 +12,10 @@ import { isObject } from 'lodash-es';
  */
 const filterUndefined = params => {
     if (!params) {
-        return {};
+        return params;
     }
     if (!isObject(params)) {
-        return {};
+        return params;
     }
     const paramsEntries = Object.entries(params)
         .map(([key, value]) => {

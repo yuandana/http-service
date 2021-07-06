@@ -20,7 +20,7 @@ export const serverErrorHandlerInterceptor = {
             if (isCancel) {
                 return error;
             }
-            console.error(`服务报错！\n ${error}`);
+            console.error(`AXIOS 执行报错！\n ${error}`);
             return error;
         }
     ]
