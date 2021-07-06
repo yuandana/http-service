@@ -1,6 +1,6 @@
 {
     "name": "@yuandana/http-service",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Some application packages based on axios can be used out of the box for restful specifications, and some commonly used interceptors are built-in",
     "main": "dist/umd/index.js",
     "module": "dist/es/index.js",
