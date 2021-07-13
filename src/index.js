@@ -148,6 +148,7 @@ export const factory = (url) => {
                     ...payloadObject,
                     ...requestConfig,
                     uuid: uniqueId(),
+                    timestamp: new Date().getTime(),
                     cancelToken: new axios.CancelToken((cancelFunction) => {
                         // An executor function receives a cancel function as a parameter
                         if (typeof receivingCancelFn === 'function') {
