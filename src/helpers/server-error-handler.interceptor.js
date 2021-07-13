@@ -11,7 +11,7 @@ export const serverErrorHandlerInterceptor = {
                 case 200:
                     return response.data;
                 default:
-                    console.error(`服务报错，错误码：${status} ！`, response);
+                    console.error(`http status error ，code：${status} ！`, response);
                     return false;
             }
         },
@@ -20,7 +20,7 @@ export const serverErrorHandlerInterceptor = {
             if (isCancel) {
                 return error;
             }
-            console.error(`AXIOS 执行报错！\n ${error}`);
+            console.error(`axios error \n`, error);
             return error;
         }
     ]

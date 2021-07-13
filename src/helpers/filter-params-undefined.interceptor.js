@@ -26,7 +26,6 @@ const filterUndefined = params => {
         })
         .filter(Boolean);
 
-    // return {...paramsEntries}
     return Object.fromEntries(paramsEntries)
 };
 
@@ -40,8 +39,12 @@ const filterUndefined = params => {
  */
 const requestInterceptor = [
     config => {
-        config.params = filterUndefined(config.params);
-        config.data = filterUndefined(config.data);
+        if(config.params){
+            config.params = filterUndefined(config.params);
+        }
+        if(config.data){
+            config.data = filterUndefined(config.data);
+        }
 
         return config;
     },
