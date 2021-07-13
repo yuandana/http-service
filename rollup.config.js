@@ -33,9 +33,9 @@ const config = {
         }
     ],
     plugins: [
-        nodeResolve({ mainFields: ["jsnext", "preferBuiltins", "browser"] }),
-        commonjs(),
         json(),
+        nodeResolve({ browser: true, preferBuiltins: false }),
+        commonjs(),
         babel({
             exclude: '**/node_modules/**',
             babelHelpers: 'runtime'
