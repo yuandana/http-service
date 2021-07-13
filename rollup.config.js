@@ -2,6 +2,7 @@ import nodeResolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import babel from '@rollup/plugin-babel';
 import replace from '@rollup/plugin-replace';
+import json from '@rollup/plugin-json';
 import { terser } from 'rollup-plugin-terser';
 import fileSize from 'rollup-plugin-filesize';
 import pkg from './package.json';
@@ -34,6 +35,7 @@ const config = {
     plugins: [
         nodeResolve(),
         commonjs(),
+        json(),
         babel({
             exclude: '**/node_modules/**',
             babelHelpers: 'runtime'

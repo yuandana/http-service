@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { cloneDeep } from 'lodash-es';
 
 const cacheObject = {};
@@ -16,7 +15,6 @@ const logObject = [
                     },
                     {
                         name: 'Request Method',
-                        // eslint-disable-next-line no-underscore-dangle
                         render: data => data?.response?.request?._method
                     },
                     {
@@ -44,7 +42,6 @@ const logObject = [
             {
                 name: 'Request Headers',
                 renderChildren: data => {
-                    // eslint-disable-next-line no-underscore-dangle
                     const requestHeaders = data?.response?.request?._headers;
                     if (requestHeaders) {
                         Object.keys(requestHeaders).forEach(key => {
@@ -75,7 +72,6 @@ const logObject = [
     {
         name: 'Response',
         renderChildren: data => {
-            // eslint-disable-next-line no-underscore-dangle
             console.log(data?.response?.request?._response);
         }
     }
@@ -109,7 +105,6 @@ const renderConsole = (list, data) => {
 const consoleLogHandler = data => {
     const { request, response } = data;
     const castTime = new Date().getTime() - request.timestamp;
-    // eslint-disable-next-line no-underscore-dangle
     const method = response.request._method;
     const { responseURL } = response.request;
     const isHttps = responseURL.indexOf('https') !== -1;

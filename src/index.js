@@ -20,7 +20,28 @@ const REQUEST_TYPE_MAPPER = {
 
 const PARAMS_REQUEST_TYPE_LIST = ['get', 'remove', 'delete', 'head', 'options'];
 
-const generateConfig = config => ({ ...BASE_CONFIG, ...config });
+const generateConfig = (config) => ({ ...BASE_CONFIG, ...config });
+
+const isUrl = (url) => {
+    const regex =
+        '^(((https|http|ftp|rtsp|mms)?://)|(/))' +
+        "?(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?" + // ftp 的 user@
+        '(([0-9]{1,3}.){3}[0-9]{1,3}' + // IP 形式的 URL 199.194.52.184
+        '|' + // 允许 IP 和 DOMAIN（域名）
+        "([0-9a-z_!~*'()-]+.)*" + // 域名 www.
+        '([0-9a-z][0-9a-z-]{0,61})?[0-9a-z].' + // 二级域名
+        '[a-z]{2,6})' + // first level domain .com or .museum
+        '(:[0-9]{1,4})?' + // 端口 :80
+        '((/?)|' + // a slash isn't required if there is no file name
+        "(/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+/?)$";
+    const re = new RegExp(regex);
+
+    if (re.test(url)) {
+        return true;
+    } else {
+        return false;
+    }
+};
 
 /**
  * 注册拦截器
@@ -37,7 +58,7 @@ const generateConfig = config => ({ ...BASE_CONFIG, ...config });
  *      ]
  * }
  */
-export const registerInterceptor = interceptor => {
+export const registerInterceptor = (interceptor) => {
     if (isObject(interceptor)) {
         const { requestInterceptor, responseInterceptor } = interceptor;
         if (requestInterceptor) {
@@ -60,7 +81,7 @@ export const registerInterceptor = interceptor => {
  * docs: https://axios-http.com/docs/req_config
  * @param {*} newConfig
  */
-export const config = newConfig => {
+export const config = (newConfig) => {
     HTTP_SERVICE_CACHE.config = newConfig;
 };
 
@@ -87,7 +108,17 @@ export const config = newConfig => {
  * @param {*} url
  * @returns
  */
-export const factory = url => {
+export const factory = (url) => {
+    if (!url) {
+        throw new Error(
+            `HTTP SERVICE ERROR: You must give the http-service factory function a valid url;`
+        );
+    }
+    if (!isUrl(url)) {
+        throw new Error(
+            `HTTP SERVICE ERROR: Please check your URL format！\n '${url}'`
+        );
+    }
     const factoryEntries = Object.entries(REQUEST_TYPE_MAPPER).map(
         ([requestType, axiosMethod]) => {
             /**
@@ -98,7 +129,7 @@ export const factory = url => {
              *
              * @returns service object
              */
-            const requestFn = (params, receivingCancelFn, config) => {
+            const requestFn = (params, receivingCancelFn, requestConfig) => {
                 //
                 const payloadObject = PARAMS_REQUEST_TYPE_LIST.includes(
                     requestType
@@ -115,11 +146,11 @@ export const factory = url => {
                     url,
                     method: axiosMethod,
                     ...payloadObject,
-                    ...config,
+                    ...requestConfig,
                     uuid: uniqueId(),
-                    cancelToken: new axios.CancelToken(cancelFunction => {
+                    cancelToken: new axios.CancelToken((cancelFunction) => {
                         // An executor function receives a cancel function as a parameter
-                        if(typeof receivingCancelFn === 'function'){
+                        if (typeof receivingCancelFn === 'function') {
                             receivingCancelFn(cancelFunction);
                         }
                     })
@@ -136,5 +167,6 @@ export const factory = url => {
 
     return Object.fromEntries(factoryEntries);
 };
+
 
 export * as helpers from './helpers';
