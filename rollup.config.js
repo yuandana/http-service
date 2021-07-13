@@ -1,4 +1,4 @@
-import nodeResolve from '@rollup/plugin-node-resolve';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import babel from '@rollup/plugin-babel';
 import replace from '@rollup/plugin-replace';
@@ -19,7 +19,7 @@ const config = {
             name: pkg.name,
             globals: {
                 axios: 'axios',
-                'lodash-es': 'lodashES'
+                'lodash-es': 'lodash'
             }
         },
         {
@@ -28,12 +28,12 @@ const config = {
             name: pkg.name,
             globals: {
                 axios: 'axios',
-                'lodash-es': 'lodashES'
+                'lodash-es': 'lodash'
             }
         }
     ],
     plugins: [
-        nodeResolve(),
+        nodeResolve({ mainFields: ["jsnext", "preferBuiltins", "browser"] }),
         commonjs(),
         json(),
         babel({
