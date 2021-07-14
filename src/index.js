@@ -22,29 +22,6 @@ const PARAMS_REQUEST_TYPE_LIST = ['get', 'remove', 'delete', 'head', 'options'];
 
 const generateConfig = (config) => ({ ...BASE_CONFIG, ...config });
 
-const isUrl = (url) => {
-    const regex =
-        '^(((https|http|ftp|rtsp|mms)?://)|(/))?' +
-        "(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?" + // ftp 的 user@
-        '(([0-9]{1,3}.){3}[0-9]{1,3}' + // IP 形式的 URL 199.194.52.184
-        '|' + // 允许 IP 和 DOMAIN（域名）
-        "([0-9a-z_!~*'()-]+.)*" + // 域名 www.
-        '([0-9a-z][0-9a-z-]{0,61})?[0-9a-z].' + // 二级域名
-        '[a-z]{2,6})' + // first level domain .com or .museum
-        '(:[0-9]{1,4})?' + // 端口 :80
-        '((/?)|' + // a slash isn't required if there is no file name
-        '(/:(([A-Z])*([a-z])*)?)|' + // /:someParams
-        "(/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+/?)$";
-
-    const re = new RegExp(regex);
-
-    if (re.test(url)) {
-        return true;
-    } else {
-        return false;
-    }
-};
-
 /**
  * 注册拦截器
  *
@@ -116,11 +93,7 @@ export const factory = (url) => {
             `HTTP SERVICE ERROR: You must give the http-service factory function a valid url;`
         );
     }
-    if (!isUrl(url)) {
-        throw new Error(
-            `HTTP SERVICE ERROR: Please check your URL format！\n '${url}'`
-        );
-    }
+
     const factoryEntries = Object.entries(REQUEST_TYPE_MAPPER).map(
         ([requestType, axiosMethod]) => {
             /**
