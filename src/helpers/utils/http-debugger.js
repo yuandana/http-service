@@ -11,40 +11,46 @@ const logObject = [
                 children: [
                     {
                         name: 'Request URL',
-                        render: data => data?.response?.request?.responseURL
+                        nameRender: (data) => {
+                            const responseURL =
+                                data?.response?.request?.responseURL;
+                            if (responseURL) {
+                                return `Request URL ${responseURL}`;
+                            }
+                            return 'Request URL';
+                        },
+                        render: (data) => data?.response?.request?.responseURL
                     },
                     {
                         name: 'Request Method',
-                        render: data => data?.response?.request?._method
+                        render: (data) => data?.response?.request?._method,
+                        nameRender: (data) => {
+                            const method = data?.response?.request?._method;
+                            if (method) {
+                                return `Request Method'${method}`;
+                            }
+                            return 'Request Method';
+                        }
                     },
                     {
                         name: 'Status Code',
-                        render: data => {
+                        nameRender: (data) => {
                             const { status, statusText = 'OK' } =
                                 data?.response?.request || {};
-                            return `${status} ${statusText}`;
+                            if (status) {
+                                return `Status Code ${status} ${statusText}`;
+                            }
+                            return 'Status Code';
                         }
                     }
                 ]
             },
             {
-                name: 'Response Headers',
-                renderChildren: data => {
-                    const responseHeaders =
-                        data?.response?.request?.responseHeaders;
-                    if (responseHeaders) {
-                        Object.keys(responseHeaders).forEach(key => {
-                            console.log(`${key}: ${responseHeaders[key]}`);
-                        });
-                    }
-                }
-            },
-            {
                 name: 'Request Headers',
-                renderChildren: data => {
+                render: (data) => {
                     const requestHeaders = data?.response?.request?._headers;
                     if (requestHeaders) {
-                        Object.keys(requestHeaders).forEach(key => {
+                        Object.keys(requestHeaders).forEach((key) => {
                             console.log(`${key}: ${requestHeaders[key]}`);
                         });
                     }
@@ -52,11 +58,23 @@ const logObject = [
             },
             {
                 name: 'Query String Parameters',
-                renderChildren: data => {
+                render: (data) => {
                     const requestParams = data?.request?.params;
                     if (requestParams) {
-                        Object.keys(requestParams).forEach(key => {
+                        Object.keys(requestParams).forEach((key) => {
                             console.log(`${key}: ${requestParams[key]}`);
+                        });
+                    }
+                }
+            },
+            {
+                name: 'Response Headers',
+                render: (data) => {
+                    const responseHeaders =
+                        data?.response?.request?.responseHeaders;
+                    if (responseHeaders) {
+                        Object.keys(responseHeaders).forEach((key) => {
+                            console.log(`${key}: ${responseHeaders[key]}`);
                         });
                     }
                 }
@@ -64,37 +82,77 @@ const logObject = [
         ]
     },
     {
-        name: 'Preview',
-        renderChildren: data => {
+        name: 'Request Payload',
+        nameRender: (data) => {
+            const requestData = data?.request?.data;
+            if (requestData) {
+                return 'Request Payload';
+            }
+            const requestParams = data?.request?.params;
+            if (requestParams) {
+                return 'Query String Parameters';
+            }
+        },
+        render: (data) => {
+            const requestData = data?.request?.data;
+            if (requestData) {
+                console.log(requestData);
+                return;
+            }
+            const requestParams = data?.request?.params;
+            if (requestParams) {
+                console.log(requestParams);
+            }
+        }
+    },
+    {
+        name: 'Request Source',
+        render: (data) => {
+            const requestData = data?.request?.data;
+            if (requestData) {
+                console.log(JSON.stringify(requestData));
+                return;
+            }
+            const responseURL = data?.response?.request?.responseURL;
+            const requestParams = data?.request?.params;
+            if (requestParams) {
+                console.log(responseURL);
+            }
+        }
+    },
+    {
+        name: 'Response Preview',
+        render: (data) => {
             console.log(data?.response?.data);
         }
     },
     {
         name: 'Response',
-        renderChildren: data => {
+        render: (data) => {
             console.log(data?.response?.request?._response);
         }
     }
 ];
 
 const renderConsole = (list, data) => {
-    list.forEach(item => {
-        const { name, children, render, renderChildren } = item;
-        const result = render && typeof render === 'function' && render(data);
-        const nextResult = result ? `: ${result}` : result;
-        const nextName = `${name} ${nextResult || ''}`;
+    list.forEach((item) => {
+        const { name, children, nameRender, render } = item;
+        let nextName = name;
+        if (typeof nameRender === 'function') {
+            nextName = nameRender(data);
+        }
         if (children) {
             console.groupCollapsed(nextName);
-            if (renderChildren && typeof renderChildren === 'function') {
-                renderChildren(data);
+            if (render && typeof render === 'function') {
+                render(data);
             }
             renderConsole(children, data);
             console.groupEnd();
             return;
         }
-        if (renderChildren && typeof renderChildren === 'function') {
+        if (render && typeof render === 'function') {
             console.groupCollapsed(nextName);
-            renderChildren(data);
+            render(data);
             console.groupEnd();
             return;
         }
@@ -102,7 +160,7 @@ const renderConsole = (list, data) => {
     });
 };
 
-const consoleLogHandler = data => {
+const consoleLogHandler = (data) => {
     const { request, response } = data;
     const castTime = new Date().getTime() - request.timestamp;
     const method = response.request._method;
