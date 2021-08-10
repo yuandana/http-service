@@ -30,7 +30,7 @@ const requestInterceptor = [
         if (nextParams) {
             Object.entries(nextParams).forEach(([key, value]) => {
                 const reg = new RegExp(`/:${key}`, 'g');
-                if (url.search(reg) !== -1) {
+                if (value !== undefined && url.search(reg) !== -1) {
                     nextUrl = nextUrl.replace(reg, `/${value}`);
                     delete nextParams[key];
                 }
@@ -41,7 +41,7 @@ const requestInterceptor = [
         if (data) {
             Object.entries(data).forEach(([key, value]) => {
                 const reg = new RegExp(`/:${key}`, 'g');
-                if (url.search(reg) !== -1) {
+                if (value !== undefined && url.search(reg) !== -1) {
                     nextUrl = nextUrl.replace(reg, `/${value}`);
                 }
             });
